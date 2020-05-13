@@ -7,7 +7,7 @@ import Input from '@material-ui/core/Input';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {sd:0,bb:0,hands:0, result:0};
+    this.state = {sd:0,bb:0,hands:0, result:0, confidenceInterval:[]};
     this.calculateChance = this.calculateChance.bind(this);        
 
   }
@@ -62,9 +62,14 @@ class App extends React.Component {
     var width = (z2 - z) / rectangles;
     for(var i = 0; i < rectangles; i++)
         area += width * this.getNormalProbabilityAtZ(width * i + z);
+    
+    var newCI = []
+    newCI.push(this.state.bb-((1.96)*standardError));
+    newCI.push(this.state.bb+((1.96)*standardError));
+  
+    this.setState({result: area, confidenceInterval: newCI});
+    console.log("answer:", this.state.result, this.state.confidenceInterval);
 
-    this.setState({result: area});
-    console.log("answer:", this.state.result);
 
   }
   updateStandardDev = (event) => {
@@ -83,6 +88,9 @@ class App extends React.Component {
 
   render() {
     let ans = this.state.result;
+    let lowerBound = this.state.confidenceInterval[0];
+    let upperBound = this.state.confidenceInterval[1];
+
       return (
         <div className="App">
             <Input placeholder="Enter Standard Deviation" onChange={this.updateStandardDev} inputProps={{ 'aria-label': 'description' }} />
@@ -101,7 +109,15 @@ class App extends React.Component {
                       <p>
                         Your Probability: {ans}
                       </p>
+
                     : <p>Your Probability: </p>
+            }
+            {this.state.confidenceInterval
+                    ?
+                    <p>95% Confidence Interval: [ {lowerBound} , {upperBound} ]</p>
+
+                    : <p>Your 95% Confidence Interval</p>
+
             }
 
 
