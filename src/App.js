@@ -7,7 +7,7 @@ import Input from '@material-ui/core/Input';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {sd:0,bb:0,hands:0, result:0, confidenceInterval:[]};
+    this.state = {color:"black",sd:0,bb:0,hands:0, result:0, confidenceInterval:[]};
     this.calculateChance = this.calculateChance.bind(this);        
 
   }
@@ -66,9 +66,20 @@ class App extends React.Component {
     var newCI = []
     newCI.push(this.state.bb-((1.96)*standardError));
     newCI.push(this.state.bb+((1.96)*standardError));
-  
-    this.setState({result: area, confidenceInterval: newCI});
-    console.log("answer:", this.state.result, this.state.confidenceInterval);
+    
+    if(area*100 >= 80){
+      this.setState({color: "green"});
+    }
+    else if(area*100 <= 20){
+      this.setState({color: "red"});
+    }
+    else{
+      this.setState({color:"yellow"})
+    }
+    this.setState({result: area*100, confidenceInterval: newCI});
+    //this.updateColor()
+
+    //console.log("answer:", this.state.result, this.state.confidenceInterval);
 
 
   }
@@ -85,7 +96,17 @@ class App extends React.Component {
     var handsPlayed = parseInt(event.target.value,10) ;
     this.setState({hands: handsPlayed});
   }
-
+  updateColor() {
+    if(this.state.result >= 80){
+      this.setState({color: "green"});
+    }
+    else if(this.state.result <= 20){
+      this.setState({color: "red"});
+    }
+    else{
+      this.setState({color:"yellow"})
+    }
+  }
   render() {
     let ans = this.state.result;
     let lowerBound = this.state.confidenceInterval[0];
@@ -107,14 +128,14 @@ class App extends React.Component {
             {this.state.result
                     ?          
                       <p>
-                        Your Probability: {ans}
+                        Your Probability of Being A Winning Player: <p class={this.state.color}> {ans}%</p>
                       </p>
 
-                    : <p>Your Probability: </p>
+                    : <p>Your Probability of Being A Winning Player: </p>
             }
             {this.state.confidenceInterval
                     ?
-                    <p>95% Confidence Interval: [ {lowerBound} , {upperBound} ]</p>
+                    <p>95% Confidence Interval of your true bb/100: [ {lowerBound} , {upperBound} ]</p>
 
                     : <p>Your 95% Confidence Interval</p>
 
