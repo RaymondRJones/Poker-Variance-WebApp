@@ -1,5 +1,7 @@
 I used React and Cloudflare to deploy this. It's just a simple calculator with some buttons for user interaction.
 
+Feel free to use this project for whatever you want.
+
 ## Purpose of Project
 I was inspired by this site https://www.primedope.com/poker-variance-calculator/, but I was disappointed because the site simply simulates a variety of outcomes. Basically, it's limited for analyzing the past.
 
